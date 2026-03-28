@@ -8,8 +8,9 @@ export default async function sendVerificationEmail(
     verifyCode: string
 ): Promise<ApiResponse>{
     try{
+        const fromAddress = process.env.RESEND_FROM || 'onboarding@resend.dev';
         await resend.emails.send({
-            from:'onboarding@resend.dev',
+            from: fromAddress,
             to: email,
             subject: 'MaskMind Verification Code',
             react: VerificationEmail({username, otp: verifyCode}),
