@@ -40,15 +40,16 @@ export default function SignUpPage() {
   }
 
   return (
-    <div className="mx-auto max-w-md p-6">
-      <h1 className="text-2xl font-semibold">Create your account</h1>
-      <p className="mt-2 text-sm text-gray-600">Sign up to receive anonymous messages.</p>
+    <div className="mx-auto flex min-h-[80vh] max-w-5xl items-center justify-center px-6 py-12">
+      <div className="w-full max-w-md rounded-3xl border border-stone-200 bg-white/90 p-8 shadow-[0_18px_50px_rgba(15,12,8,0.08)]">
+        <h1 className="text-2xl font-semibold">Create your account</h1>
+        <p className="mt-2 text-sm text-stone-600">Sign up to receive anonymous messages.</p>
 
-      <form className="mt-6 space-y-4" onSubmit={handleSubmit}>
+        <form className="mt-6 space-y-4" onSubmit={handleSubmit}>
         <div>
           <label className="block text-sm font-medium">Username</label>
           <input
-            className="mt-1 w-full rounded border px-3 py-2"
+            className="mt-1 w-full rounded-xl border border-stone-300 bg-white px-3 py-2 text-sm outline-none focus:border-stone-500"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             required
@@ -58,7 +59,7 @@ export default function SignUpPage() {
           <label className="block text-sm font-medium">Email</label>
           <input
             type="email"
-            className="mt-1 w-full rounded border px-3 py-2"
+            className="mt-1 w-full rounded-xl border border-stone-300 bg-white px-3 py-2 text-sm outline-none focus:border-stone-500"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
@@ -68,30 +69,31 @@ export default function SignUpPage() {
           <label className="block text-sm font-medium">Password</label>
           <input
             type="password"
-            className="mt-1 w-full rounded border px-3 py-2"
+            className="mt-1 w-full rounded-xl border border-stone-300 bg-white px-3 py-2 text-sm outline-none focus:border-stone-500"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
           />
         </div>
 
-        {message ? <p className="text-sm text-gray-700">{message}</p> : null}
+        {message ? <p className="text-sm text-[var(--warning)]">{message}</p> : null}
 
         <button
           type="submit"
           disabled={loading}
-          className="w-full rounded bg-black px-4 py-2 text-white disabled:opacity-50"
+          className="w-full rounded-full bg-black px-4 py-2 text-sm font-semibold text-white disabled:opacity-50"
         >
           {loading ? 'Creating account...' : 'Sign up'}
         </button>
       </form>
 
-      <p className="mt-4 text-sm text-gray-600">
-        Already have an account?{' '}
-        <a className="text-black underline" href="/sign-in">
-          Sign in
-        </a>
-      </p>
+        <p className="mt-4 text-sm text-stone-600">
+          Already have an account?{' '}
+          <a className="font-semibold text-black" href="/sign-in">
+            Sign in
+          </a>
+        </p>
+      </div>
     </div>
   );
 }
