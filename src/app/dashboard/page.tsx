@@ -126,17 +126,17 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="mx-auto max-w-3xl p-6">
-      <div className="flex items-center justify-between">
+    <div className="mx-auto max-w-5xl px-6 py-12">
+      <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-semibold">Dashboard</h1>
-          <p className="mt-1 text-sm text-gray-600">
+          <p className="mt-1 text-sm text-stone-600">
             Manage your anonymous inbox.
           </p>
         </div>
         <div className="flex items-center gap-2">
           <button
-            className="rounded border px-3 py-2 text-sm"
+            className="rounded-full border border-stone-300 px-4 py-2 text-sm"
             onClick={() => {
               fetchMessages();
               fetchBlockedWords();
@@ -164,7 +164,7 @@ export default function DashboardPage() {
             </span>
           </button>
           <button
-            className="rounded border px-4 py-2"
+            className="rounded-full border border-stone-300 px-4 py-2 text-sm"
             onClick={() => signOut({ callbackUrl: '/' })}
           >
             Sign out
@@ -172,101 +172,110 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      <div className="mt-6 flex items-center gap-3">
-        <label className="text-sm font-medium">Accept messages</label>
-        <button
-          className={`rounded px-3 py-1 text-sm ${
-            accepting ? 'bg-black text-white' : 'border'
-          }`}
-          onClick={() => updateAccepting(!accepting)}
-          disabled={toggleLoading}
-        >
-          {accepting ? 'On' : 'Off'}
-        </button>
-      </div>
+      <div className="mt-8 grid gap-4 lg:grid-cols-[1.2fr_0.8fr]">
+        <div className="rounded-3xl border border-stone-200 bg-white/90 p-6 shadow-[0_18px_50px_rgba(15,12,8,0.08)]">
+          <div className="flex items-center justify-between">
+            <h2 className="text-lg font-semibold">Inbox</h2>
+            <div className="flex items-center gap-3 text-sm">
+              <span className="text-stone-600">Accepting</span>
+              <button
+                className={`rounded-full px-3 py-1 text-xs font-semibold ${
+                  accepting ? 'bg-black text-white' : 'border border-stone-300'
+                }`}
+                onClick={() => updateAccepting(!accepting)}
+                disabled={toggleLoading}
+              >
+                {accepting ? 'On' : 'Off'}
+              </button>
+            </div>
+          </div>
 
-      {error ? <p className="mt-4 text-sm text-red-600">{error}</p> : null}
+          {error ? <p className="mt-3 text-sm text-[var(--warning)]">{error}</p> : null}
 
-      {username ? (
-        <div className="mt-4 rounded border p-3 text-sm">
-          <p className="font-medium">Your public link</p>
-          <p className="mt-1 break-all">/u/{username}</p>
+          {loading ? (
+            <p className="mt-4 text-sm text-stone-600">Loading...</p>
+          ) : messages.length === 0 ? (
+            <p className="mt-4 text-sm text-stone-600">
+              No messages yet. Share your link to receive anonymous messages.
+            </p>
+          ) : (
+            <ul className="mt-4 space-y-3">
+              {messages.map((msg) => (
+                <li
+                  key={msg._id || msg.createAt.toString()}
+                  className="rounded-2xl border border-stone-200 bg-white p-4"
+                >
+                  <p className="text-sm">{msg.content}</p>
+                  <div className="mt-3 flex items-center justify-between text-xs text-stone-500">
+                    <span>{new Date(msg.createAt).toLocaleString()}</span>
+                    <button
+                      className="rounded-full border border-stone-300 px-3 py-1 text-xs"
+                      onClick={() => deleteMessage(msg._id)}
+                    >
+                      <span className="inline-flex items-center gap-1">
+                        <svg
+                          width="14"
+                          height="14"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          aria-hidden="true"
+                        >
+                          <path d="M3 6h18" />
+                          <path d="M8 6V4h8v2" />
+                          <path d="M19 6l-1 14H6L5 6" />
+                          <path d="M10 11v6" />
+                          <path d="M14 11v6" />
+                        </svg>
+                        Delete
+                      </span>
+                    </button>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
-      ) : null}
 
-      <div className="mt-6">
-        <h2 className="text-lg font-semibold">Messages</h2>
-        {loading ? (
-          <p className="mt-2 text-sm text-gray-600">Loading...</p>
-        ) : messages.length === 0 ? (
-          <p className="mt-2 text-sm text-gray-600">
-            No messages yet. Share your link to receive anonymous messages.
-          </p>
-        ) : (
-          <ul className="mt-4 space-y-3">
-            {messages.map((msg) => (
-              <li key={msg._id || msg.createAt.toString()} className="rounded border p-3">
-                <p className="text-sm">{msg.content}</p>
-                <p className="mt-2 text-xs text-gray-500">
-                  {new Date(msg.createAt).toLocaleString()}
-                </p>
-                <div className="mt-3 flex items-center gap-2">
-                  <button
-                    className="rounded border px-2 py-1 text-xs"
-                    onClick={() => deleteMessage(msg._id)}
-                  >
-                    <span className="inline-flex items-center gap-1">
-                      <svg
-                        width="14"
-                        height="14"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        aria-hidden="true"
-                      >
-                        <path d="M3 6h18" />
-                        <path d="M8 6V4h8v2" />
-                        <path d="M19 6l-1 14H6L5 6" />
-                        <path d="M10 11v6" />
-                        <path d="M14 11v6" />
-                      </svg>
-                      Delete
-                    </span>
-                  </button>
-                </div>
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
+        <div className="space-y-4">
+          {username ? (
+            <div className="rounded-3xl border border-stone-200 bg-white/90 p-6 shadow-[0_18px_50px_rgba(15,12,8,0.08)]">
+              <p className="text-xs uppercase tracking-[0.2em] text-stone-500">
+                Your public link
+              </p>
+              <p className="mt-2 text-sm font-semibold">/u/{username}</p>
+            </div>
+          ) : null}
 
-      <div className="mt-8">
-        <h2 className="text-lg font-semibold">Blocked Words</h2>
-        <p className="mt-1 text-sm text-gray-600">
-          Messages containing any of these words will be blocked.
-        </p>
-        <textarea
-          className="mt-3 w-full rounded border px-3 py-2"
-          rows={3}
-          value={blockedInput}
-          onChange={(e) => setBlockedInput(e.target.value)}
-          placeholder="spam, scam, abuse"
-        />
-        <button
-          className="mt-3 rounded bg-black px-4 py-2 text-white disabled:opacity-50"
-          onClick={saveBlockedWords}
-          disabled={blockingLoading}
-        >
-          {blockingLoading ? 'Saving...' : 'Save blocked words'}
-        </button>
-        {blockedWords.length ? (
-          <p className="mt-2 text-xs text-gray-600">
-            Active: {blockedWords.join(', ')}
-          </p>
-        ) : null}
+          <div className="rounded-3xl border border-stone-200 bg-white/90 p-6 shadow-[0_18px_50px_rgba(15,12,8,0.08)]">
+            <h2 className="text-lg font-semibold">Blocked words</h2>
+            <p className="mt-1 text-sm text-stone-600">
+              Messages containing any of these words will be blocked.
+            </p>
+            <textarea
+              className="mt-3 w-full rounded-2xl border border-stone-300 bg-white px-3 py-2 text-sm outline-none focus:border-stone-500"
+              rows={3}
+              value={blockedInput}
+              onChange={(e) => setBlockedInput(e.target.value)}
+              placeholder="spam, scam, abuse"
+            />
+            <button
+              className="mt-3 rounded-full bg-black px-4 py-2 text-sm font-semibold text-white disabled:opacity-50"
+              onClick={saveBlockedWords}
+              disabled={blockingLoading}
+            >
+              {blockingLoading ? 'Saving...' : 'Save blocked words'}
+            </button>
+            {blockedWords.length ? (
+              <p className="mt-2 text-xs text-stone-600">
+                Active: {blockedWords.join(', ')}
+              </p>
+            ) : null}
+          </div>
+        </div>
       </div>
     </div>
   );
