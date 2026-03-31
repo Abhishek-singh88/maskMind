@@ -1,12 +1,11 @@
 'use client'
 
 import Image from 'next/image';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 
 export default function VerifyPage() {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const [username, setUsername] = useState('');
   const [code, setCode] = useState('');
   const [loading, setLoading] = useState(false);
@@ -17,9 +16,11 @@ export default function VerifyPage() {
   const [expiryAt, setExpiryAt] = useState<Date | null>(null);
 
   useEffect(() => {
-    const presetUsername = searchParams.get('username');
+    if (typeof window === 'undefined') return;
+    const params = new URLSearchParams(window.location.search);
+    const presetUsername = params.get('username');
     if (presetUsername) setUsername(presetUsername);
-  }, [searchParams]);
+  }, []);
 
   const fetchExpiry = useCallback(async () => {
     try {
