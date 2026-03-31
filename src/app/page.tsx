@@ -3,7 +3,10 @@ export default function Home() {
     <div className="min-h-screen">
       <div className="mx-auto flex min-h-screen max-w-6xl flex-col px-6 py-10">
         <header className="flex items-center justify-between">
-          <div className="text-lg font-semibold">MaskMind</div>
+          <a className="flex items-center gap-2 text-lg font-semibold" href="/">
+            <img src="/maskmind.png" alt="MaskMind logo" className="h-7 w-7" />
+            MaskMind
+          </a>
           <nav className="flex items-center gap-3 text-sm text-stone-600">
             <a className="rounded-full border border-stone-300 px-4 py-2" href="/sign-in">
               Sign in

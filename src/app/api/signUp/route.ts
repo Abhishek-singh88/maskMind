@@ -60,6 +60,7 @@ export async function POST(request: Request) {
                     verifyCodeExpiry: expiryDate,
                     isVerified : false,
                     isAcceptingMessages: true,
+                    authProvider: 'credentials',
                     messages:[]
             })
             await newUser.save();

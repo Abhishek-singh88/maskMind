@@ -1,5 +1,6 @@
 'use client'
 
+import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
@@ -10,6 +11,7 @@ export default function SignUpPage() {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
+  const [googleLoading, setGoogleLoading] = useState(false);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -39,10 +41,19 @@ export default function SignUpPage() {
     }
   }
 
+  async function handleGoogle() {
+    setGoogleLoading(true);
+    setMessage('');
+    await signIn('google', { callbackUrl: '/dashboard' });
+  }
+
   return (
     <div className="mx-auto flex min-h-[80vh] max-w-5xl items-center justify-center px-6 py-12">
       <div className="w-full max-w-md rounded-3xl border border-stone-200 bg-white/90 p-8 shadow-[0_18px_50px_rgba(15,12,8,0.08)]">
-        <h1 className="text-2xl font-semibold">Create your account</h1>
+        <div className="flex items-center gap-3">
+          <img src="/maskmind.png" alt="MaskMind logo" className="h-9 w-9" />
+          <h1 className="text-2xl font-semibold">Create your account</h1>
+        </div>
         <p className="mt-2 text-sm text-stone-600">Sign up to receive anonymous messages.</p>
 
         <form className="mt-6 space-y-4" onSubmit={handleSubmit}>
@@ -81,11 +92,26 @@ export default function SignUpPage() {
         <button
           type="submit"
           disabled={loading}
-          className="w-full rounded-full bg-black px-4 py-2 text-sm font-semibold text-white disabled:opacity-50"
+          className="w-full cursor-pointer rounded-full bg-black px-4 py-2 text-sm font-semibold text-white disabled:opacity-50"
         >
           {loading ? 'Creating account...' : 'Sign up'}
         </button>
       </form>
+
+        <div className="mt-6 flex items-center gap-3 text-xs text-stone-500">
+          <span className="h-px flex-1 bg-stone-200" />
+          OR
+          <span className="h-px flex-1 bg-stone-200" />
+        </div>
+
+        <button
+          type="button"
+          onClick={handleGoogle}
+          disabled={googleLoading}
+          className="mt-6 w-full cursor-pointer rounded-full border border-stone-300 bg-white px-4 py-2 text-sm font-semibold transition-colors hover:bg-[#ff3b30] hover:text-white disabled:opacity-50"
+        >
+          {googleLoading ? 'Connecting to Google...' : 'Continue with Google'}
+        </button>
 
         <p className="mt-4 text-sm text-stone-600">
           Already have an account?{' '}

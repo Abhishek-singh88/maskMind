@@ -20,6 +20,7 @@ export default function DashboardPage() {
   const [blockedWords, setBlockedWords] = useState<string[]>([]);
   const [blockedInput, setBlockedInput] = useState('');
   const [blockingLoading, setBlockingLoading] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   async function fetchMessages() {
     setLoading(true);
@@ -126,17 +127,23 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="mx-auto max-w-5xl px-6 py-12">
+    <div className="mx-auto max-w-6xl px-6 py-12">
       <div className="flex flex-wrap items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-semibold">Dashboard</h1>
-          <p className="mt-1 text-sm text-stone-600">
-            Manage your anonymous inbox.
-          </p>
+        <div className="flex items-center gap-3">
+          <img src="/maskmind.png" alt="MaskMind logo" className="h-9 w-9" />
+          <div>
+            <p className="text-xs uppercase tracking-[0.2em] text-stone-500">
+              MaskMind
+            </p>
+            <h1 className="text-2xl font-semibold">Dashboard</h1>
+            <p className="mt-1 text-sm text-stone-600">
+              Manage your anonymous inbox.
+            </p>
+          </div>
         </div>
         <div className="flex items-center gap-2">
           <button
-            className="rounded-full border border-stone-300 px-4 py-2 text-sm"
+            className="cursor-pointer rounded-full border border-stone-300 px-4 py-2 text-sm transition-colors hover:bg-[#ff3b30] hover:text-white"
             onClick={() => {
               fetchMessages();
               fetchBlockedWords();
@@ -164,7 +171,7 @@ export default function DashboardPage() {
             </span>
           </button>
           <button
-            className="rounded-full border border-stone-300 px-4 py-2 text-sm"
+            className="cursor-pointer rounded-full border border-stone-300 px-4 py-2 text-sm transition-colors hover:bg-[#ff3b30] hover:text-white"
             onClick={() => signOut({ callbackUrl: '/' })}
           >
             Sign out
@@ -179,7 +186,7 @@ export default function DashboardPage() {
             <div className="flex items-center gap-3 text-sm">
               <span className="text-stone-600">Accepting</span>
               <button
-                className={`rounded-full px-3 py-1 text-xs font-semibold ${
+                className={`cursor-pointer rounded-full px-3 py-1 text-xs font-semibold transition-colors ${
                   accepting ? 'bg-black text-white' : 'border border-stone-300'
                 }`}
                 onClick={() => updateAccepting(!accepting)}
@@ -199,44 +206,46 @@ export default function DashboardPage() {
               No messages yet. Share your link to receive anonymous messages.
             </p>
           ) : (
-            <ul className="mt-4 space-y-3">
-              {messages.map((msg) => (
-                <li
-                  key={msg._id || msg.createAt.toString()}
-                  className="rounded-2xl border border-stone-200 bg-white p-4"
-                >
-                  <p className="text-sm">{msg.content}</p>
-                  <div className="mt-3 flex items-center justify-between text-xs text-stone-500">
-                    <span>{new Date(msg.createAt).toLocaleString()}</span>
-                    <button
-                      className="rounded-full border border-stone-300 px-3 py-1 text-xs"
-                      onClick={() => deleteMessage(msg._id)}
-                    >
-                      <span className="inline-flex items-center gap-1">
-                        <svg
-                          width="14"
-                          height="14"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          aria-hidden="true"
-                        >
-                          <path d="M3 6h18" />
-                          <path d="M8 6V4h8v2" />
-                          <path d="M19 6l-1 14H6L5 6" />
-                          <path d="M10 11v6" />
-                          <path d="M14 11v6" />
-                        </svg>
-                        Delete
-                      </span>
-                    </button>
-                  </div>
-                </li>
-              ))}
-            </ul>
+            <div className="mt-4 rounded-2xl border border-stone-200 bg-white">
+              <ul className="max-h-[420px] space-y-3 overflow-y-auto p-4">
+                {messages.slice(0, 40).map((msg) => (
+                  <li
+                    key={msg._id || msg.createAt.toString()}
+                    className="rounded-2xl border border-stone-200 bg-white p-4 transition-shadow hover:shadow-[0_12px_30px_rgba(15,12,8,0.12)]"
+                  >
+                    <p className="text-sm">{msg.content}</p>
+                    <div className="mt-3 flex items-center justify-between text-xs text-stone-500">
+                      <span>{new Date(msg.createAt).toLocaleString()}</span>
+                      <button
+                        className="cursor-pointer rounded-full border border-stone-300 px-3 py-1 text-xs transition-colors hover:bg-[#ff3b30] hover:text-white"
+                        onClick={() => deleteMessage(msg._id)}
+                      >
+                        <span className="inline-flex items-center gap-1">
+                          <svg
+                            width="14"
+                            height="14"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            aria-hidden="true"
+                          >
+                            <path d="M3 6h18" />
+                            <path d="M8 6V4h8v2" />
+                            <path d="M19 6l-1 14H6L5 6" />
+                            <path d="M10 11v6" />
+                            <path d="M14 11v6" />
+                          </svg>
+                          Delete
+                        </span>
+                      </button>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </div>
           )}
         </div>
 
@@ -246,7 +255,36 @@ export default function DashboardPage() {
               <p className="text-xs uppercase tracking-[0.2em] text-stone-500">
                 Your public link
               </p>
-              <p className="mt-2 text-sm font-semibold">/u/{username}</p>
+              <div className="mt-3 flex items-center justify-between gap-3 rounded-2xl border border-stone-200 bg-[var(--bg-accent)] px-3 py-2 text-sm font-semibold">
+                <span className="truncate">/u/{username}</span>
+                <button
+                  className="cursor-pointer rounded-full border border-stone-300 bg-white px-3 py-1 text-xs transition-colors hover:bg-[#ff3b30] hover:text-white"
+                  onClick={async () => {
+                    const url = `${window.location.origin}/u/${username}`;
+                    await navigator.clipboard.writeText(url);
+                    setCopied(true);
+                    setTimeout(() => setCopied(false), 1500);
+                  }}
+                >
+                  <span className="inline-flex items-center gap-1">
+                    <svg
+                      width="12"
+                      height="12"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      aria-hidden="true"
+                    >
+                      <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                    </svg>
+                    {copied ? 'Copied' : 'Copy'}
+                  </span>
+                </button>
+              </div>
             </div>
           ) : null}
 
@@ -263,7 +301,7 @@ export default function DashboardPage() {
               placeholder="spam, scam, abuse"
             />
             <button
-              className="mt-3 rounded-full bg-black px-4 py-2 text-sm font-semibold text-white disabled:opacity-50"
+              className="mt-3 cursor-pointer rounded-full bg-black px-4 py-2 text-sm font-semibold text-white disabled:opacity-50"
               onClick={saveBlockedWords}
               disabled={blockingLoading}
             >

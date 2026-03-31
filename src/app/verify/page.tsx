@@ -10,11 +10,37 @@ export default function VerifyPage() {
   const [code, setCode] = useState('');
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
+  const [resending, setResending] = useState(false);
+  const [cooldown, setCooldown] = useState(0);
+  const [expirySeconds, setExpirySeconds] = useState<number | null>(null);
+  const [expiryAt, setExpiryAt] = useState<Date | null>(null);
 
   useEffect(() => {
     const presetUsername = searchParams.get('username');
     if (presetUsername) setUsername(presetUsername);
   }, [searchParams]);
+
+  useEffect(() => {
+    if (!username) return;
+    const handle = setTimeout(() => {
+      fetchExpiry();
+    }, 500);
+    return () => clearTimeout(handle);
+  }, [username]);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCooldown((prev) => (prev > 0 ? prev - 1 : 0));
+      if (expiryAt) {
+        const remaining = Math.max(
+          0,
+          Math.floor((expiryAt.getTime() - Date.now()) / 1000)
+        );
+        setExpirySeconds(remaining);
+      }
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [expiryAt]);
 
   async function handleVerify(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -34,8 +60,8 @@ export default function VerifyPage() {
         return;
       }
 
-      setMessage('Email verified. You can now sign in.');
-      router.push('/sign-in');
+      setMessage('Email verified. Redirecting to sign in...');
+      router.push('/sign-in?verified=1');
     } catch (error) {
       console.error('Verification error:', error);
       setMessage('Something went wrong. Please try again.');
@@ -44,12 +70,65 @@ export default function VerifyPage() {
     }
   }
 
+  async function handleResend() {
+    if (!username) {
+      setMessage('Enter your username first.');
+      return;
+    }
+    if (cooldown > 0) return;
+    setResending(true);
+    setMessage('');
+    try {
+      const res = await fetch('/api/resend-verify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setMessage(data?.message || 'Failed to resend code');
+        return;
+      }
+      setMessage('Verification code resent. Check your email.');
+      setCooldown(60);
+      const nextExpiry = new Date(Date.now() + 60 * 60 * 1000);
+      setExpiryAt(nextExpiry);
+    } catch (error) {
+      console.error('Resend error:', error);
+      setMessage('Something went wrong. Please try again.');
+    } finally {
+      setResending(false);
+    }
+  }
+
+  async function fetchExpiry() {
+    try {
+      const res = await fetch('/api/verify-status', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username }),
+      });
+      const data = await res.json();
+      if (!res.ok) return;
+      const exp = new Date(data.verifyCodeExpiry);
+      setExpiryAt(exp);
+    } catch (error) {
+      console.error('Fetch expiry error:', error);
+    }
+  }
+
   return (
     <div className="mx-auto flex min-h-[80vh] max-w-5xl items-center justify-center px-6 py-12">
       <div className="w-full max-w-md rounded-3xl border border-stone-200 bg-white/90 p-8 shadow-[0_18px_50px_rgba(15,12,8,0.08)]">
-        <h1 className="text-2xl font-semibold">Verify your email</h1>
+        <div className="flex items-center gap-3">
+          <img src="/maskmind.png" alt="MaskMind logo" className="h-9 w-9" />
+          <h1 className="text-2xl font-semibold">Verify your email</h1>
+        </div>
         <p className="mt-2 text-sm text-stone-600">
           Enter the 6-digit code sent to your email.
+        </p>
+        <p className="mt-1 text-xs text-stone-500">
+          Note: New senders can land in Spam/Junk. Please check there too.
         </p>
 
         <form className="mt-6 space-y-4" onSubmit={handleVerify}>
@@ -75,12 +154,31 @@ export default function VerifyPage() {
 
         {message ? <p className="text-sm text-[var(--warning)]">{message}</p> : null}
 
+        {expirySeconds !== null ? (
+          <p className="text-xs text-stone-500">
+            Code expires in {Math.floor(expirySeconds / 60)}m {expirySeconds % 60}s
+          </p>
+        ) : null}
+
         <button
           type="submit"
           disabled={loading}
-          className="w-full rounded-full bg-black px-4 py-2 text-sm font-semibold text-white disabled:opacity-50"
+          className="cursor-pointer w-full rounded-full bg-black px-4 py-2 text-sm font-semibold text-white disabled:opacity-50"
         >
           {loading ? 'Verifying...' : 'Verify'}
+        </button>
+
+        <button
+          type="button"
+          onClick={handleResend}
+          disabled={resending || cooldown > 0}
+          className="cursor-pointer w-full rounded-full border border-stone-300 bg-white px-4 py-2 text-sm font-semibold transition-colors hover:bg-[#ff3b30] hover:text-white disabled:opacity-50"
+        >
+          {resending
+            ? 'Resending...'
+            : cooldown > 0
+              ? `Resend in ${cooldown}s`
+              : 'Resend code'}
         </button>
       </form>
       </div>
