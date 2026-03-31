@@ -18,7 +18,9 @@ export const authOptions:NextAuthOptions = {
                     identifier: { label: "Email or Username", type: "text" },
                     password: { label: "Password", type: "password" }
             },
-            async authorize(credentials: { identifier?: string; password?: string }):Promise<import("next-auth").User | null> {
+            async authorize(
+                credentials: Record<"identifier" | "password", string> | undefined
+            ):Promise<import("next-auth").User | null> {
                 await dbConnet();
                 try{
                     if(!credentials?.identifier || !credentials?.password){
