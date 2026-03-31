@@ -25,6 +25,9 @@ export interface User extends Document {
     verifyCodeExpiry: Date,
     isVerified : boolean,
     isAcceptingMessages: boolean,
+    authProvider: 'credentials' | 'google',
+    resetPasswordCode?: string,
+    resetPasswordExpiry?: Date,
     blockedWords: string[],
     messages: Message[]
 }
@@ -44,7 +47,7 @@ const UserSchema: Schema<User> = new Schema({
     },
     password: {
         type: String,
-        required: [true,"Password is required"],
+        required: [function (this: User) { return this.authProvider === 'credentials'; }, "Password is required"],
     },
     verifyCode: {
         type: String,
@@ -61,6 +64,19 @@ const UserSchema: Schema<User> = new Schema({
     isAcceptingMessages: {
         type: Boolean,
         default: true
+    },
+    authProvider: {
+        type: String,
+        enum: ['credentials', 'google'],
+        default: 'credentials'
+    },
+    resetPasswordCode: {
+        type: String,
+        required: false,
+    },
+    resetPasswordExpiry: {
+        type: Date,
+        required: false,
     },
     blockedWords: {
         type: [String],
