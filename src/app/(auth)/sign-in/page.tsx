@@ -3,12 +3,11 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { signIn } from 'next-auth/react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 export default function SignInPage() {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -17,13 +16,15 @@ export default function SignInPage() {
   const [toast, setToast] = useState('');
 
   useEffect(() => {
-    if (searchParams.get('verified') === '1') {
+    if (typeof window === 'undefined') return;
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('verified') === '1') {
       setToast('Email verified. Please sign in.');
       const t = setTimeout(() => setToast(''), 3000);
       return () => clearTimeout(t);
     }
     return;
-  }, [searchParams]);
+  }, []);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
