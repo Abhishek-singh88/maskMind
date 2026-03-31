@@ -2,11 +2,15 @@
 
 MaskMind is a modern anonymous-feedback app inspired by NGL. It lets people share a public link, collect anonymous messages, and moderate their inbox with spam controls and blocked words.
 
-## Features
+## Live Demo
 
-- Anonymous message inbox
+- https://mask-mind.vercel.app/
+
+## Highlights
+
+- Anonymous message inbox with moderation controls
 - Public profile link (`/u/:username`)
-- Accept / pause messages
+- Accept / pause messages at any time
 - Spam filters + blocked words
 - Delete messages
 - Email verification (OTP)
@@ -24,7 +28,7 @@ MaskMind is a modern anonymous-feedback app inspired by NGL. It lets people shar
 - Resend for email
 - Tailwind CSS (v4)
 
-## Getting Started
+## Quick Start
 
 ### 1) Install dependencies
 
@@ -50,6 +54,7 @@ GOOGLE_CLIENT_SECRET="..."
 Notes:
 - `RESEND_FROM` must use a verified domain.
 - `SECRET` and `NEXTAUTH_SECRET` should be long and random in production.
+- Set `NEXTAUTH_URL` to your production domain when deploying.
 
 ### 3) Run the dev server
 
@@ -98,11 +103,17 @@ email/
 public/
 ```
 
-## Security Notes
+## Auth and Accounts
 
-- OTPs expire after 60 minutes.
-- Rate limiting is in-memory for development; use Redis in production.
-- Password reset uses OTP and email verification.
+- Email/password accounts use OTP verification.
+- Google OAuth accounts are created on first sign-in.
+- Password reset uses OTP sent via email.
+
+## Moderation and Safety
+
+- Incoming messages are rate-limited (in-memory for dev).
+- Blocked words filter out unwanted content.
+- Users can delete messages anytime.
 
 ## Development Scripts
 
@@ -115,4 +126,12 @@ npm run lint
 
 ## Deployment
 
-This app can be deployed to any Node-compatible host. Make sure all env vars are set and your database + Resend domain are configured.
+This app can be deployed to any Node-compatible host. For Vercel:
+
+1. Add all env vars from `.env` to Vercel.
+2. Set `NEXTAUTH_URL` to your production domain.
+3. Deploy.
+
+## License
+
+MIT

@@ -73,7 +73,7 @@ export default function PublicProfilePage() {
         <button
           type="submit"
           disabled={loading}
-          className="w-full rounded-full bg-black px-4 py-2 text-sm font-semibold text-white disabled:opacity-50"
+          className="cursor-pointer w-full rounded-full bg-black px-4 py-2 text-sm font-semibold text-white disabled:opacity-50"
         >
           {loading ? 'Sending...' : 'Send message'}
         </button>
