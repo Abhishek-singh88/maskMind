@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image';
 import { signOut, useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
 
@@ -130,7 +131,7 @@ export default function DashboardPage() {
     <div className="mx-auto max-w-6xl px-6 py-12">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div className="flex items-center gap-3">
-          <img src="/maskmind.png" alt="MaskMind logo" className="h-9 w-9" />
+          <Image src="/maskmind.png" alt="MaskMind logo" width={36} height={36} />
           <div>
             <p className="text-xs uppercase tracking-[0.2em] text-stone-500">
               MaskMind

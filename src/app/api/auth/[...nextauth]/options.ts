@@ -18,7 +18,7 @@ export const authOptions:NextAuthOptions = {
                     identifier: { label: "Email or Username", type: "text" },
                     password: { label: "Password", type: "password" }
             },
-            async authorize(credentials:any):Promise<any> {
+            async authorize(credentials: { identifier?: string; password?: string }):Promise<import("next-auth").User | null> {
                 await dbConnet();
                 try{
                     if(!credentials?.identifier || !credentials?.password){
@@ -45,15 +45,16 @@ export const authOptions:NextAuthOptions = {
                    const isPasswordCorrect = await bcrypt.compare(credentials.password, user.password)
 
                     if(isPasswordCorrect){
-                        return user;
+                        return user as unknown as import("next-auth").User;
                     }
                     else{
                         throw new Error("Incorrect Password");
                     }
 
-                }catch(error:any){
-                    console.error("Authorize error:", error?.message || error);
-                    throw new Error(error?.message || "Login failed");
+                }catch(error: unknown){
+                    const err = error instanceof Error ? error.message : "Login failed";
+                    console.error("Authorize error:", err);
+                    throw new Error(err);
 
                 }
 

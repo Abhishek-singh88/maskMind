@@ -1,5 +1,7 @@
 'use client'
 
+import Image from 'next/image';
+import Link from 'next/link';
 import { signIn } from 'next-auth/react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -83,7 +85,7 @@ export default function SignInPage() {
       ) : null}
       <div className="w-full max-w-md rounded-3xl border border-stone-200 bg-white/90 p-8 shadow-[0_18px_50px_rgba(15,12,8,0.08)]">
         <div className="flex items-center gap-3">
-          <img src="/maskmind.png" alt="MaskMind logo" className="h-9 w-9" />
+          <Image src="/maskmind.png" alt="MaskMind logo" width={36} height={36} />
           <h1 className="text-2xl font-semibold">Welcome back</h1>
         </div>
         <p className="mt-2 text-sm text-stone-600">Sign in to your account.</p>
@@ -118,9 +120,9 @@ export default function SignInPage() {
         >
           {loading ? 'Signing in...' : 'Sign in'}
         </button>
-        <a className="text-xs font-semibold text-black" href="/forgot-password">
+        <Link className="text-xs font-semibold text-black" href="/forgot-password">
           Forgot password?
-        </a>
+        </Link>
       </form>
 
         <div className="mt-6 flex items-center gap-3 text-xs text-stone-500">
@@ -140,9 +142,9 @@ export default function SignInPage() {
 
         <p className="mt-4 text-sm text-stone-600">
           Don&apos;t have an account?{' '}
-          <a className="font-semibold text-black" href="/sign-up">
+          <Link className="font-semibold text-black" href="/sign-up">
             Sign up
-          </a>
+          </Link>
         </p>
       </div>
     </div>

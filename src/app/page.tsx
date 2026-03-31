@@ -1,16 +1,19 @@
+import Image from 'next/image';
+import Link from 'next/link';
+
 export default function Home() {
   return (
     <div className="min-h-screen">
       <div className="mx-auto flex min-h-screen max-w-6xl flex-col px-6 py-10">
         <header className="flex items-center justify-between">
-          <a className="flex items-center gap-2 text-lg font-semibold" href="/">
-            <img src="/maskmind.png" alt="MaskMind logo" className="h-7 w-7" />
+          <Link className="flex items-center gap-2 text-lg font-semibold" href="/">
+            <Image src="/maskmind.png" alt="MaskMind logo" width={28} height={28} />
             MaskMind
-          </a>
+          </Link>
           <nav className="flex items-center gap-3 text-sm text-stone-600">
-            <a className="rounded-full border border-stone-300 px-4 py-2" href="/sign-in">
+            <Link className="rounded-full border border-stone-300 px-4 py-2" href="/sign-in">
               Sign in
-            </a>
+            </Link>
           </nav>
         </header>
 
@@ -30,18 +33,18 @@ export default function Home() {
               clean, focused, and respectful.
             </p>
             <div className="mt-6 flex flex-wrap gap-3">
-              <a
+              <Link
                 className="rounded-full bg-black px-7 py-3.5 text-base font-extrabold !text-white shadow-[0_14px_28px_rgba(15,12,8,0.28)] ring-1 ring-white/20"
                 href="/sign-up"
               >
                 Start your inbox
-              </a>
-              <a
+              </Link>
+              <Link
                 className="rounded-full border border-stone-300 px-6 py-3 text-sm font-semibold"
                 href="/sign-in"
               >
                 Sign in
-              </a>
+              </Link>
             </div>
             <div className="mt-8 grid gap-4 sm:grid-cols-3">
               {[

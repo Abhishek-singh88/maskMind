@@ -1,7 +1,8 @@
 'use client'
 
+import Image from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 export default function VerifyPage() {
   const router = useRouter();
@@ -20,13 +21,29 @@ export default function VerifyPage() {
     if (presetUsername) setUsername(presetUsername);
   }, [searchParams]);
 
+  const fetchExpiry = useCallback(async () => {
+    try {
+      const res = await fetch('/api/verify-status', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username }),
+      });
+      const data = await res.json();
+      if (!res.ok) return;
+      const exp = new Date(data.verifyCodeExpiry);
+      setExpiryAt(exp);
+    } catch (error) {
+      console.error('Fetch expiry error:', error);
+    }
+  }, [username]);
+
   useEffect(() => {
     if (!username) return;
     const handle = setTimeout(() => {
       fetchExpiry();
     }, 500);
     return () => clearTimeout(handle);
-  }, [username]);
+  }, [username, fetchExpiry]);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -101,27 +118,12 @@ export default function VerifyPage() {
     }
   }
 
-  async function fetchExpiry() {
-    try {
-      const res = await fetch('/api/verify-status', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username }),
-      });
-      const data = await res.json();
-      if (!res.ok) return;
-      const exp = new Date(data.verifyCodeExpiry);
-      setExpiryAt(exp);
-    } catch (error) {
-      console.error('Fetch expiry error:', error);
-    }
-  }
 
   return (
     <div className="mx-auto flex min-h-[80vh] max-w-5xl items-center justify-center px-6 py-12">
       <div className="w-full max-w-md rounded-3xl border border-stone-200 bg-white/90 p-8 shadow-[0_18px_50px_rgba(15,12,8,0.08)]">
         <div className="flex items-center gap-3">
-          <img src="/maskmind.png" alt="MaskMind logo" className="h-9 w-9" />
+          <Image src="/maskmind.png" alt="MaskMind logo" width={36} height={36} />
           <h1 className="text-2xl font-semibold">Verify your email</h1>
         </div>
         <p className="mt-2 text-sm text-stone-600">

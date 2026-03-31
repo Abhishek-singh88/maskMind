@@ -1,5 +1,7 @@
 'use client'
 
+import Image from 'next/image';
+import Link from 'next/link';
 import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
@@ -51,7 +53,7 @@ export default function SignUpPage() {
     <div className="mx-auto flex min-h-[80vh] max-w-5xl items-center justify-center px-6 py-12">
       <div className="w-full max-w-md rounded-3xl border border-stone-200 bg-white/90 p-8 shadow-[0_18px_50px_rgba(15,12,8,0.08)]">
         <div className="flex items-center gap-3">
-          <img src="/maskmind.png" alt="MaskMind logo" className="h-9 w-9" />
+          <Image src="/maskmind.png" alt="MaskMind logo" width={36} height={36} />
           <h1 className="text-2xl font-semibold">Create your account</h1>
         </div>
         <p className="mt-2 text-sm text-stone-600">Sign up to receive anonymous messages.</p>
@@ -115,9 +117,9 @@ export default function SignUpPage() {
 
         <p className="mt-4 text-sm text-stone-600">
           Already have an account?{' '}
-          <a className="font-semibold text-black" href="/sign-in">
+          <Link className="font-semibold text-black" href="/sign-in">
             Sign in
-          </a>
+          </Link>
         </p>
       </div>
     </div>
